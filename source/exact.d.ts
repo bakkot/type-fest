@@ -46,6 +46,7 @@ export type Exact<ParameterType, InputType extends ParameterType> = ParameterTyp
 	/*
 	Create a type from `ParameterType` and `InputType` and change keys exclusive to `InputType` to `never`.
 	- Generate a list of keys that exists in `InputType` but not in `ParameterType`.
-	- Mark these excess keys as `never`.
+	- Mark these excess keys as errors.
 	*/
-	: {[Key in keyof ParameterType]: Exact<ParameterType[Key], InputType[Key]>} & Record<Exclude<keyof InputType, KeysOfUnion<ParameterType>>, never>;
+	: {[Key in keyof ParameterType]: Exact<ParameterType[Key], InputType[Key]>}
+    & {[K2 in Exclude<keyof InputType, KeysOfUnion<ParameterType>>]: {error: K2 extends symbol ? 'unexpected symbol property' : `unexpected property ${K2 extends symbol ? 'symbol' : K2}`}};
